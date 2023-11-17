@@ -56,6 +56,10 @@ namespace DocCare_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Remember_Token")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Specialite")
                         .IsRequired()
                         .HasColumnType("longtext");

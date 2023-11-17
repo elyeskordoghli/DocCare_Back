@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\DocCare_Backend.props" />
+</Project>

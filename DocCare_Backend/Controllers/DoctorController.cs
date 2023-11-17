@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Numerics;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -51,7 +52,9 @@ namespace DocCare_Backend.Controllers
                         Genre = nouveauDocteur.Genre,
                         Email = nouveauDocteur.Email,
                         Password = nouveauDocteur.Password,
-                        Specialite = nouveauDocteur.Specialite
+                        Specialite = nouveauDocteur.Specialite,
+                        R_Token = nouveauDocteur.R_Token
+
                     };
 
                     // Ajouter le nouveau docteur à la table Docteurs
@@ -84,40 +87,55 @@ namespace DocCare_Backend.Controllers
         [Route("Login")]
         public IActionResult Login([FromBody] UserLogin userLogin)
         {
-            string email = userLogin.Email;
-            string password = userLogin.Password;
-
-            // Vérification des informations d'identification dans la base de données
-            var user = _context.Docteurs.FirstOrDefault(u => u.Email == email && u.Password == password);
-
-            if (user != null)
+            try
             {
-                // Génération d'une clé secrète pour signer le token
-                var key = GenerateSecurityKey(); // Appel à une méthode pour générer la clé
+                var email = userLogin.Email;
+                var password = userLogin.Password;
 
+                // Vérification des informations d'identification dans la base de données
+                var doctor = _context.Docteurs.FirstOrDefault(u => u.Email == email && u.Password == password);
+
+                if (doctor == null)
+                {
+                    return NotFound(new { error = "Utilisateur non trouvé ou mot de passe incorrect.", status = 400 });
+                }
                 // Génération du token JWT
+                var key = GenerateSecurityKey(); // Appel à une méthode pour générer la clé
                 var tokenHandler = new JwtSecurityTokenHandler();
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                new Claim(ClaimTypes.Name, email),
+                    new Claim(ClaimTypes.Name, email),
                         // Ajoutez d'autres revendications (claims) si nécessaire
                     }),
-                    Expires = DateTime.UtcNow.AddHours(24), // Durée de validité du token (1 heure dans cet exemple)
+                    Expires = DateTime.UtcNow.AddHours(24),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
 
-                // Vous pouvez renvoyer le tokenString dans la réponse ou le stocker côté client pour les futures requêtes
-                return Ok(new { Token = tokenString });
-            }
 
-            return NotFound("Utilisateur non trouvé ou mot de passe incorrect.");
+                // Enregistrez les modifications dans la base de données
+                _context.SaveChanges();
+
+                // Vous pouvez renvoyer le tokenString dans la réponse ou le stocker côté client pour les futures requêtes
+                return Ok(new
+                {
+                    message = "Authentification réussie",
+                    Admin = doctor,
+                    token = tokenString,
+                    status = 200
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Une erreur s'est produite lors de la connexion.", exception = ex.Message });
+            }
         }
+
 
         // Méthode pour générer une clé aléatoire sécurisée
         private byte[] GenerateSecurityKey()

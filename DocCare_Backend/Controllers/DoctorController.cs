@@ -52,8 +52,8 @@ namespace DocCare_Backend.Controllers
                         Genre = nouveauDocteur.Genre,
                         Email = nouveauDocteur.Email,
                         Password = nouveauDocteur.Password,
-                        Specialite = nouveauDocteur.Specialite
-                        //R_Token = nouveauDocteur.R_Token
+                        Specialite = nouveauDocteur.Specialite,
+                        R_Token = null // R_Token à null lors du sign-up
 
                     };
 
@@ -117,6 +117,10 @@ namespace DocCare_Backend.Controllers
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
 
+                var tokenStringWithCustomFormat = tokenString[0]+ "|" + tokenString;
+
+                doctor.R_Token = tokenStringWithCustomFormat;
+
 
                 // Enregistrez les modifications dans la base de données
                 _context.SaveChanges();
@@ -126,7 +130,7 @@ namespace DocCare_Backend.Controllers
                 {
                     message = "Authentification réussie",
                     Admin = doctor,
-                    token = tokenString,
+                    token = tokenStringWithCustomFormat,
                     status = 200
                 });
             }

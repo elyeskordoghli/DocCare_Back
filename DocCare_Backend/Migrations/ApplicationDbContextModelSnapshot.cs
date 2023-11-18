@@ -56,8 +56,7 @@ namespace DocCare_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Remember_Token")
-                        .IsRequired()
+                    b.Property<string>("R_Token")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Specialite")
@@ -67,6 +66,54 @@ namespace DocCare_Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Docteurs");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.Patient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Adresse")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DateN")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<byte[]>("DossierMedical")
+                        .HasColumnType("longblob");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Num")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.UserLogin", b =>
+                {
+                    b.Property<string>("Email")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("UserLogins");
                 });
 #pragma warning restore 612, 618
         }

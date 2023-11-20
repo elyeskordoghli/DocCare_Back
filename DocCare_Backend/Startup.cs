@@ -51,6 +51,7 @@ namespace DocCare_Backend
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

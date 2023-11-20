@@ -12,8 +12,9 @@ namespace DocCare_Backend.Models
         public DbSet<Docteur> Docteurs { get; set; }
         public DbSet<UserLogin> UserLogins { get; set; }
         public DbSet<Patient> Patients { get; set; }
-        public DbSet<User> Users { get; set; }
 
+        public DbSet<User> Users { get; set; }
+        public DbSet<Consultation> Consultations { get; set; }
 
     }
 

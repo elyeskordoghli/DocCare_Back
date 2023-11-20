@@ -12,9 +12,12 @@
         public required string Email { get; set; }
         public required string Password { get; set; }
         public string? R_Token { get; set; }
-        public required string Specialite { get; set; }
-
-
+        // Clé étrangère vers la spécialité
+        public int SpecialiteId { get; set; }
+        public Specialite Specialite { get; set; }
     }
+
+    
+
 
 }

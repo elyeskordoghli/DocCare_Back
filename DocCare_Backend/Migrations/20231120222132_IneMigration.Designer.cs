@@ -2,6 +2,7 @@
 using DocCare_Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocCare_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231120222132_IneMigration")]
+    partial class IneMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +38,6 @@ namespace DocCare_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Prenom")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -51,8 +51,6 @@ namespace DocCare_Backend.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
 
                     b.ToTable("Consultations");
                 });
@@ -108,26 +106,6 @@ namespace DocCare_Backend.Migrations
                     b.ToTable("Docteurs");
                 });
 
-            modelBuilder.Entity("DocCare_Backend.Models.DossierMedical", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("DossiersMedicaux");
-                });
-
             modelBuilder.Entity("DocCare_Backend.Models.Patient", b =>
                 {
                     b.Property<int>("Id")
@@ -141,6 +119,9 @@ namespace DocCare_Backend.Migrations
                     b.Property<string>("DateN")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<byte[]>("DossierMedical")
+                        .HasColumnType("longblob");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -212,18 +193,21 @@ namespace DocCare_Backend.Migrations
                     b.ToTable("UserLogins");
                 });
 
-            modelBuilder.Entity("DocCare_Backend.Models.Consultation", b =>
+            modelBuilder.Entity("DocCare_Backend.Models.Docteur", b =>
                 {
-                    b.HasOne("DocCare_Backend.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
+                    b.HasOne("DocCare_Backend.Models.Specialite", "Specialite")
+                        .WithMany("Docteurs")
+                        .HasForeignKey("SpecialiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Patient");
+                    b.Navigation("Specialite");
                 });
 
-            
+            modelBuilder.Entity("DocCare_Backend.Models.Specialite", b =>
+                {
+                    b.Navigation("Docteurs");
+                });
 #pragma warning restore 612, 618
         }
     }

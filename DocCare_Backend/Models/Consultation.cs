@@ -9,5 +9,7 @@
         public required string Time { get; set; }
         public required string Status { get; set; }
         public byte[]? DossierMedical { get; set; }
+        public virtual required Patient Patient { get; set; } // Propriété de navigation vers l'objet Patient
+
     }
 }

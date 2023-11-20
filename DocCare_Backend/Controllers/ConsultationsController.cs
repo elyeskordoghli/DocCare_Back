@@ -90,7 +90,7 @@ namespace DocCare_Backend.Controllers
                     if (consultation.DossierMedical != null && consultation.DossierMedical.Length > 0)
                     {
                         // Patient nouveau, dossier médical doit être null
-                        newPatient.DossierMedical = null;
+                       // newPatient.DossierMedical = null;
                     }
 
                     // Associer les informations du patient à la consultation
@@ -99,7 +99,7 @@ namespace DocCare_Backend.Controllers
                     consultation.Date = form["Date"]; // Assigner la valeur du champ Date depuis le formulaire
                     consultation.Time = form["Time"]; // Assigner la valeur du champ Time depuis le formulaire
                     consultation.Status = form["Status"]; // Assigner la valeur du champ Status depuis le formulaire
-                    consultation.DossierMedical = newPatient.DossierMedical;
+                   // consultation.DossierMedical = newPatient.DossierMedical;
 
                     // Ajouter la consultation à la base de données
                     _context.Add(consultation);
@@ -117,11 +117,11 @@ namespace DocCare_Backend.Controllers
                     if (consultation.DossierMedical != null && consultation.DossierMedical.Length > 0)
                     {
                         // Combiner les fichiers en ajoutant les nouveaux au fichier existant
-                        var existingMedicalFile = existingPatient.DossierMedical;
-                        var updatedMedicalFile = CombineFiles(existingMedicalFile, consultation.DossierMedical);
+                       // var existingMedicalFile = existingPatient.DossierMedical;
+                       // var updatedMedicalFile = CombineFiles(existingMedicalFile, consultation.DossierMedical);
 
                         // Mettre à jour le dossier médical du patient existant
-                        existingPatient.DossierMedical = updatedMedicalFile;
+                       // existingPatient.DossierMedical = updatedMedicalFile;
                     }
 
                     // Ajouter la consultation à la base de données

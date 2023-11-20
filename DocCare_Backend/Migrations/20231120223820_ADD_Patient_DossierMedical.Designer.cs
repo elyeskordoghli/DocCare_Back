@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocCare_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231117234149_AddDossierMedicalToPatient")]
-    partial class AddDossierMedicalToPatient
+    [Migration("20231120223820_ADD_Patient_DossierMedical")]
+    partial class ADD_Patient_DossierMedical
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,45 @@ namespace DocCare_Backend.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("DocCare_Backend.Models.Consultation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<byte[]>("DossierMedical")
+                        .HasColumnType("longblob");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Time")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Consultations");
+                });
 
             modelBuilder.Entity("DocCare_Backend.Models.Docteur", b =>
                 {
@@ -71,6 +110,26 @@ namespace DocCare_Backend.Migrations
                     b.ToTable("Docteurs");
                 });
 
+            modelBuilder.Entity("DocCare_Backend.Models.DossierMedical", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("DossiersMedicaux");
+                });
+
             modelBuilder.Entity("DocCare_Backend.Models.Patient", b =>
                 {
                     b.Property<int>("Id")
@@ -84,9 +143,6 @@ namespace DocCare_Backend.Migrations
                     b.Property<string>("DateN")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<byte[]>("DossierMedical")
-                        .HasColumnType("longblob");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -117,6 +173,33 @@ namespace DocCare_Backend.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("UserLogins");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.Consultation", b =>
+                {
+                    b.HasOne("DocCare_Backend.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.DossierMedical", b =>
+                {
+                    b.HasOne("DocCare_Backend.Models.Patient", "Patient")
+                        .WithMany("DossiersMedicaux")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.Patient", b =>
+                {
+                    b.Navigation("DossiersMedicaux");
                 });
 #pragma warning restore 612, 618
         }

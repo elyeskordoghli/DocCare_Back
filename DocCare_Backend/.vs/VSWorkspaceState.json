@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\Controllers",
+    "\\Migrations",
     "\\Models"
   ],
-  "SelectedNode": "\\Controllers\\UserController.cs",
+  "SelectedNode": "\\Models\\ApplicationDbContext.cs",
   "PreviewInSolutionExplorer": false
 }

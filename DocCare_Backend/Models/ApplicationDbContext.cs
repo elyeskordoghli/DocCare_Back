@@ -16,6 +16,17 @@ namespace DocCare_Backend.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Consultation> Consultations { get; set; }
 
+        public DbSet<Specialite> Specialites { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configuration de la relation One-to-Many
+            modelBuilder.Entity<Docteur>()
+                .HasOne(d => d.Specialite)
+                .WithMany(s => s.Docteurs)
+                .HasForeignKey(d => d.SpecialiteId);
+        }
+
     }
 
 }

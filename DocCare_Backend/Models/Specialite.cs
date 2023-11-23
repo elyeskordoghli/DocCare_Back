@@ -5,7 +5,10 @@ namespace DocCare_Backend.Models
         public int SpecialiteId { get; set; }
         public string? Nom { get; set; }
         public string? ImagePath { get; set; } // Chemin de l'image
-        // Navigation vers les docteurs associés
+
+        // Propriété de navigation inverse
         public ICollection<Docteur>? Docteurs { get; set; }
+
+
     }
 }

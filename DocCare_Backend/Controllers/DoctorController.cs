@@ -52,7 +52,7 @@ namespace DocCare_Backend.Controllers
                         Genre = nouveauDocteur.Genre,
                         Email = nouveauDocteur.Email,
                         Password = nouveauDocteur.Password,
-                        Specialite = nouveauDocteur.Specialite,
+                        SpecialiteId = nouveauDocteur.SpecialiteId,
                         R_Token = null // R_Token à null lors du sign-up
 
                     };

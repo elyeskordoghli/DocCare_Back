@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
 
 namespace DocCare_Backend.Models
 {
@@ -15,24 +15,25 @@ namespace DocCare_Backend.Models
 
         public DbSet<User> Users { get; set; }
         public DbSet<Consultation> Consultations { get; set; }
-        public DbSet<DossierMedical> DossiersMedicaux { get; set; }
-
-
-
-<<<<<<< HEAD
-=======
         public DbSet<Specialite> Specialites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuration de la relation One-to-Many
+
+            // Configuration des relations
             modelBuilder.Entity<Docteur>()
                 .HasOne(d => d.Specialite)
                 .WithMany(s => s.Docteurs)
                 .HasForeignKey(d => d.SpecialiteId);
+
+            modelBuilder.Entity<Consultation>()
+                .HasOne(c => c.Patient)
+                .WithMany()
+                .HasForeignKey(c => c.PatientId);
+
+
+
         }
->>>>>>> 82dbf883f429addd85c850017030f3ea457b1a36
 
     }
-
 }

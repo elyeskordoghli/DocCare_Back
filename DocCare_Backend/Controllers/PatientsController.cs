@@ -70,11 +70,75 @@ namespace DocCare_Backend.Models
 
         // POST: Patients/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-       
 
 
 
 
+
+
+
+
+
+
+        // ... autres using nécessaires
+
+            [HttpPost]
+            [Route("Create")]
+            public async Task<IActionResult> Create([FromForm] Patient patientData)
+            {
+                try
+                {
+                    // Récupérer les données du formulaire multipart
+                    var form = await Request.ReadFormAsync();
+                    if (patientData == null)
+            {
+                return BadRequest("Les données du patient sont nulles.");
+            }
+
+            // Valider les données du modèle du patient
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+        // Vérifier si le fichier DossMedical est présent et non null
+         var dossierMedicalFile = form.Files["dossierMedical"];
+                byte[]? dossierMedicalBytes = null;
+
+                if (dossierMedicalFile != null && dossierMedicalFile.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        // Copier le fichier médical dans un tableau de bytes
+                        await dossierMedicalFile.CopyToAsync(memoryStream);
+                        dossierMedicalBytes = memoryStream.ToArray();
+                    }
+                }
+
+                // Créer un objet Patient à partir des données reçues
+                var patient = new Patient
+                {
+                    Nom = patientData.Nom,
+                    Prenom = patientData.Prenom,
+                    DateN = patientData.DateN,
+                    Adresse = patientData.Adresse,
+                    Num = patientData.Num,
+                    DossierMedical = dossierMedicalBytes // Enregistrez le contenu du fichier dans la colonne DossierMedical
+                };
+
+                // Ajouter le patient à la base de données
+                _context.Add(patient);
+                await _context.SaveChangesAsync();
+
+                // Patient enregistré avec succès, retourner un message JSON
+                return Ok(new { message = "Patient enregistré avec succès.", patient });
+            }
+            catch (Exception ex)
+            {
+                // En cas d'erreur, retourner un message d'erreur
+                return StatusCode(500, $"Une erreur s'est produite : {ex.Message}");
+            }
+        }
 
 
 
@@ -98,7 +162,7 @@ namespace DocCare_Backend.Models
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Route("EditPatient/{id}")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,Prenom,DateN,Adresse,Num,DossierMedical")] Patient updatedPatient)
+        public async Task<IActionResult> Edit(int id, [FromForm] Patient updatedPatient)
         {
             if (id != updatedPatient.Id)
             {
@@ -118,7 +182,7 @@ namespace DocCare_Backend.Models
                     var num = form["Num"];
 
                     var dossierMedicalFile = form.Files["DossierMedical"];
-                    byte[]? dossierMedicalBytes = null;
+                   // byte[]? dossierMedicalBytes = null;
 
 
                     var patient = await _context.Patients.FindAsync(id);

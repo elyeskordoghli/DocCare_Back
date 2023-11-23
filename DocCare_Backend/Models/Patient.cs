@@ -13,8 +13,9 @@ namespace DocCare_Backend.Models
         public required String DateN { get; set; }
         public required String Adresse { get; set; }
         public required String Num { get; set; }
-        public virtual ICollection<DossierMedical>? DossiersMedicaux { get; set; }
+        public  byte[]? DossierMedical { get; set; }
 
+    
 
     }
 }

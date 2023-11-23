@@ -108,26 +108,6 @@ namespace DocCare_Backend.Migrations
                     b.ToTable("Docteurs");
                 });
 
-            modelBuilder.Entity("DocCare_Backend.Models.DossierMedical", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("DossiersMedicaux");
-                });
-
             modelBuilder.Entity("DocCare_Backend.Models.Patient", b =>
                 {
                     b.Property<int>("Id")
@@ -141,6 +121,9 @@ namespace DocCare_Backend.Migrations
                     b.Property<string>("DateN")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<byte[]>("DossierMedical")
+                        .HasColumnType("longblob");
 
                     b.Property<string>("Nom")
                         .IsRequired()
@@ -223,7 +206,21 @@ namespace DocCare_Backend.Migrations
                     b.Navigation("Patient");
                 });
 
-            
+            modelBuilder.Entity("DocCare_Backend.Models.Docteur", b =>
+                {
+                    b.HasOne("DocCare_Backend.Models.Specialite", "Specialite")
+                        .WithMany("Docteurs")
+                        .HasForeignKey("SpecialiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Specialite");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.Specialite", b =>
+                {
+                    b.Navigation("Docteurs");
+                });
 #pragma warning restore 612, 618
         }
     }

@@ -54,7 +54,7 @@ namespace DocCare_Backend.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
+        [Route("getAll")]
         public async Task<IActionResult> Index()
         {
             try

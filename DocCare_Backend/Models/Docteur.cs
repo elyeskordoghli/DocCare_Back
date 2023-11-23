@@ -1,4 +1,6 @@
-﻿namespace DocCare_Backend.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DocCare_Backend.Models
 {
     public class Docteur
     {
@@ -12,12 +14,12 @@
         public required string Email { get; set; }
         public required string Password { get; set; }
         public string? R_Token { get; set; }
-        // Clé étrangère vers la spécialité
-        public int SpecialiteId { get; set; }
-        public Specialite Specialite { get; set; }
+        // Clé étrangère
+        public int SpecialiteId { get; set; } // Changer int en int?
+        public Specialite? Specialite { get; set; }
     }
 
-    
+
 
 
 }

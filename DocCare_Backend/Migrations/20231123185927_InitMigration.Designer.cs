@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocCare_Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231118180351_Correction")]
-    partial class Correction
+    [Migration("20231123185927_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,45 @@ namespace DocCare_Backend.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("DocCare_Backend.Models.Consultation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<byte[]>("DossierMedical")
+                        .HasColumnType("longblob");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Time")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Consultations");
+                });
 
             modelBuilder.Entity("DocCare_Backend.Models.Docteur", b =>
                 {
@@ -62,11 +101,12 @@ namespace DocCare_Backend.Migrations
                     b.Property<string>("R_Token")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Specialite")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("SpecialiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SpecialiteId");
 
                     b.ToTable("Docteurs");
                 });
@@ -105,6 +145,45 @@ namespace DocCare_Backend.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("DocCare_Backend.Models.Specialite", b =>
+                {
+                    b.Property<int>("SpecialiteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Nom")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("SpecialiteId");
+
+                    b.ToTable("Specialites");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("R_Token")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("DocCare_Backend.Models.UserLogin", b =>
                 {
                     b.Property<string>("Email")
@@ -117,6 +196,33 @@ namespace DocCare_Backend.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("UserLogins");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.Consultation", b =>
+                {
+                    b.HasOne("DocCare_Backend.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.Docteur", b =>
+                {
+                    b.HasOne("DocCare_Backend.Models.Specialite", "Specialite")
+                        .WithMany("Docteurs")
+                        .HasForeignKey("SpecialiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Specialite");
+                });
+
+            modelBuilder.Entity("DocCare_Backend.Models.Specialite", b =>
+                {
+                    b.Navigation("Docteurs");
                 });
 #pragma warning restore 612, 618
         }

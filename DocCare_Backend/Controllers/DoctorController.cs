@@ -61,7 +61,12 @@ namespace DocCare_Backend.Controllers
                     _context.Docteurs.Add(newDoctor);
                     _context.SaveChanges();
 
-                    return Ok("Inscription du docteur réussie !");
+                    return Ok(new
+                    {
+                        message = "Inscription réussite réussie",
+                        Admin = newDoctor,
+                        status = 200
+                    });
                 }
                 catch (Exception ex)
                 {

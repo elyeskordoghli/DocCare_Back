@@ -16,6 +16,7 @@ namespace DocCare_Backend.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Consultation> Consultations { get; set; }
         public DbSet<Specialite> Specialites { get; set; }
+        public DbSet<DocteurDisponibilite> DocteursDisponibilites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,14 @@ namespace DocCare_Backend.Models
                 .HasOne(c => c.Patient)
                 .WithMany()
                 .HasForeignKey(c => c.PatientId);
+
+
+
+            modelBuilder.Entity<Docteur>()
+               .HasMany(d => d.DocteursDisponibilites) // Un médecin a plusieurs disponibilités
+               .WithOne(disp => disp.Docteur) // Une disponibilité appartient à un médecin
+               .HasForeignKey(disp => disp.DocteurId);
+
 
 
 

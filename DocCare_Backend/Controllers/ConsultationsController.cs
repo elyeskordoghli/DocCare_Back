@@ -23,32 +23,69 @@ namespace DocCare_Backend.Controllers
         }
 
         // GET: Consultations
-        [HttpGet]
-        [Route("getAll")]
-        public async Task<IActionResult> GetAllConsultations()
-        {
-            try
-            {
-                var consultations = await _context.Consultations.ToListAsync();
 
-                if (consultations != null)
-                {
-                    return Json(new { data = consultations });
-                }
-                else
-                {
-                    return Problem("La liste des consultations est vide.");
-                }
-            }
-            catch (Exception ex)
+  
+
+        
+
+[HttpGet]
+    [Route("getAll")]
+    public async Task<IActionResult> GetAllConsultations()
+    {
+        try
+        {
+            var consultationsFromDb = await _context.Consultations.ToListAsync();
+
+            // Trier les consultations côté client
+            var consultations = consultationsFromDb
+                .OrderBy(c => c.Status == "hide" ? 0 : 1) // Mettre les consultations avec le statut "hide" en premier lieu
+                .ThenBy(c => GetDateTimeFromString(c.Date)) // Trier par la date (en appelant la méthode de conversion)
+                .ThenBy(c => ConvertTimeStringToTimeSpan(c.Time)) // Trier par l'heure convertie en TimeSpan
+                .ToList();
+
+            if (consultations != null)
             {
-                return Problem($"Une erreur s'est produite : {ex.Message}");
+                return Json(new { data = consultations });
+            }
+            else
+            {
+                return Problem("La liste des consultations est vide.");
             }
         }
+        catch (Exception ex)
+        {
+            return Problem($"Une erreur s'est produite : {ex.Message}");
+        }
+    }
+
+    // Méthode pour convertir la chaîne de date en objet DateTime
+    private DateTime GetDateTimeFromString(string date)
+    {
+        DateTime result;
+        if (DateTime.TryParse(date, out result))
+        {
+            return result;
+        }
+        return DateTime.MinValue; // Valeur par défaut en cas d'échec de la conversion
+    }
+
+    // Méthode pour convertir la chaîne de temps (HH:mm) en objet TimeSpan
+    private TimeSpan ConvertTimeStringToTimeSpan(string time)
+    {
+        TimeSpan result;
+        if (TimeSpan.TryParse(time, out result))
+        {
+            return result;
+        }
+        return TimeSpan.MinValue; // Valeur par défaut en cas d'échec de la conversion
+    }
 
 
-        // GET: Consultations/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+
+
+    // GET: Consultations/Details/5
+    public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Consultations == null)
             {
@@ -214,7 +251,7 @@ namespace DocCare_Backend.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Route("EditConsultation/{id}")]
-        public async Task<IActionResult> EditConsultationStatus(int id, [FromBody] string Status)
+        public async Task<IActionResult> EditConsultationStatus(int id, [FromForm] string Status)
         {
             try
             {
@@ -226,20 +263,29 @@ namespace DocCare_Backend.Controllers
                     return NotFound("Consultation non trouvée");
                 }
 
-                // Mettre à jour le statut de la consultation avec le nouveau statut
-                consultation.Status = Status;
+                if(Status != null)
+                {  // Mettre à jour le statut de la consultation avec le nouveau statut
+                    consultation.Status = Status;
 
-                // Mettre à jour la consultation dans la base de données
-                _context.Consultations.Update(consultation);
-                await _context.SaveChangesAsync();
+                    // Mettre à jour la consultation dans la base de données
+                    _context.Consultations.Update(consultation);
+                    await _context.SaveChangesAsync();
 
-                return Ok("Statut de la consultation mis à jour avec succès.");
+                    return Ok("Statut de la consultation mis à jour avec succès.");
+                }
+                else
+                {
+                    return Problem("hhahahh");
+
+                }
+
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Une erreur s'est produite : {ex.Message}");
             }
         }
+
 
 
         // GET: Consultations/Delete/5

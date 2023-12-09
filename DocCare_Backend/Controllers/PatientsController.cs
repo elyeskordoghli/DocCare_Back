@@ -164,10 +164,7 @@ namespace DocCare_Backend.Models
         [Route("EditPatient/{id}")]
         public async Task<IActionResult> Edit(int id, [FromForm] Patient updatedPatient)
         {
-            if (id != updatedPatient.Id)
-            {
-                return NotFound();
-            }
+
 
             if (ModelState.IsValid)
             {
@@ -295,5 +292,43 @@ namespace DocCare_Backend.Models
                 return StatusCode(500, "Une erreur s'est produite lors de la recherche.");
             }
         }
+
+
+
+        [HttpGet]
+        [Route("DownloadDossierMedical/{id}")]
+        public async Task<IActionResult> DownloadDossierMedical(int id)
+        {
+            try
+            {
+                // Récupérer les informations du patient à partir de la base de données
+                var patient = await _context.Patients.FirstOrDefaultAsync(m => m.Id == id);
+
+                if (patient == null)
+                {
+                    return NotFound("Patient non trouvé");
+                }
+
+                // Vérifier si le dossier médical du patient existe
+                if (patient.DossierMedical == null)
+                {
+                    return NotFound("Dossier médical non trouvé");
+                }
+
+                // Construire le nom du fichier en utilisant le nom et le prénom du patient
+                string nomFichier = $"{patient.Nom}_{patient.Prenom}_DossierMedical.zip";
+
+                // Renvoyer le contenu du dossier médical en tant que fichier pour le téléchargement
+                return File(patient.DossierMedical, "application/zip", nomFichier);
+                // Vous pouvez ajuster le type MIME ("application/octet-stream") selon le type de fichier
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Une erreur s'est produite : {ex.Message}");
+            }
+        }
+
+
+
     }
 }

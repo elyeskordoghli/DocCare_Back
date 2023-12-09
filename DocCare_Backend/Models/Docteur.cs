@@ -17,6 +17,9 @@ namespace DocCare_Backend.Models
         // Clé étrangère
         public int SpecialiteId { get; set; } // Changer int en int?
         public Specialite? Specialite { get; set; }
+
+        public ICollection<DocteurDisponibilite>? DocteursDisponibilites { get; set; }
+
     }
 
 
